@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Ian Kaufmann">
+    <title>Theta / TFUEL Stake Rewards Viewer</title>
+
+    <meta name="theme-color" content="#7952b3">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/styles.css" rel="stylesheet">
+  </head>
+  <body>
+        
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><span class="d-none d-md-inline-block">Theta / TFUEL Stake&nbsp;</span><span class="d-inline-block">Rewards</span><span class="d-none d-md-inline-block">&nbsp;Viewer</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0"></ul>
+        <div class="d-flex">
+            <input id="input-address" class="form-control me-2" type="text" placeholder="Enter Your Wallet Address" aria-label="Enter Your Wallet Address">
+            <button id="button-start" class="btn btn-outline-success text-nowrap" type="submit">Start Report</button>
+        </div>
+        </div>
+    </div>
+    </nav>
+
+    <main class="container">
+
+        <section id="section-intro" class="bg-light p-2 p-md-5 rounded">
+            <h1>Theta / TFUEL Stake Rewards Viewer</h1>
+            <p class="lead">This tool will use the official Theta Explorer API to build your stake rewards report.  All API interaction happens client-side, and the only server that your wallet address is communicated to is the Theta Explorer API.</p>
+            <p>Historical price data is pulled from the thetascan.io API, however the wallet address is not sent there.</p>
+            <p>Note:  Depending on the number of individual rewards you have recieved, this process may take quite a long time.  It will also use a lot of bandwidth, as each response from the Theta Explorer API can be around 25mb of JSON, of which there could be hundreds of responses.</p>
+            <p>This is due to the extremely inefficient way that the API groups outputs on transactions.  Each stake reward payout is batched with hundreds of addresses besides yours, and they are all included in the API response.</p>
+        </section>
+
+        <section id="section-running" class="bg-light p-5 rounded">
+            <h1><div class="spinner-border text-success" role="status"></div> Report Is Running...</h1>
+            <div id="message-running"></div>
+        </section>
+
+        <section id="section-report">
+
+            <div class="text-center p-3">
+                <button id="button-csv" class="btn btn-outline-primary btn-sm text-nowrap me-2">Download CSV</button>
+            </div>
+
+            <table class="table" id="table-staked">
+                <thead>
+                    <tr>
+                        <th scope="col">Theta Staked</th>
+                        <th scope="col">TFUEL Staked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row"><span data-value="staked-theta"></span> THETA</td>
+                        <td><span data-value="staked-tfuel"></span> TFUEL</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table" id="table-totals">
+                <thead>
+                    <tr>
+                        <th scope="col">TFUEL Earned</th>
+                        <th scope="col">Current Price</th>
+                        <th scope="col">Cost Basis</th>
+                        <th scope="col">Current Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row"><span data-value="total-tfuel-earned"></span> TFUEL</td>
+                        <td>$<span data-value="total-current-price"></span></td>
+                        <td>$<span data-value="total-cost-basis"></span></td>
+                        <td>$<span data-value="total-current-value"></span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table" id="table-rewards">
+                <thead>
+                    <tr>
+                        <th scope="col" data-key="tfuel">TFUEL</th>
+                        <th scope="col" data-key="price">Price</th>
+                        <th scope="col" data-key="amount">Amount</th>
+                        <th scope="col" data-key="timestamp">Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </section>
+
+    </main>
+
+    <div id="errors" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+
+  </body>
+</html>

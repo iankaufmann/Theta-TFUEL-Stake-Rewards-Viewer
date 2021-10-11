@@ -1,0 +1,21 @@
+body {
+  min-height: 75rem;
+  padding-top: 4.5rem;
+}
+
+section {
+    display: none;
+}
+
+#section-intro {
+    display: block;
+}
+
+#table-staked td {
+    width: 50%;
+}
+
+#table-totals td ,
+#table-rewards td {
+    width: 25%;
+}
