@@ -1,5 +1,4 @@
 body {
-  min-height: 75rem;
   padding-top: 4.5rem;
 }
 
@@ -18,4 +17,10 @@ section {
 #table-totals td ,
 #table-rewards td {
     width: 25%;
+}
+
+#message-running {
+    margin-top: 1em;
+    max-height: calc(100vh - 215px);
+    overflow: auto;
 }

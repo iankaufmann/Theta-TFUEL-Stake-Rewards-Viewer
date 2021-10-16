@@ -7,7 +7,7 @@ Author: Ian Kaufmann
 
 */
 
-let APP = function() {
+let APP_FUNCTION = function() {
 
     let APP = this;
 
@@ -54,12 +54,12 @@ let APP = function() {
                 "api": "explorer",
                 "method": "accounttx",
                 "transform_url": function(url, api) {
-                    return url + '/' + APP.config.address
+                    return url + '/' + APP.config.address.toLowerCase()
                 },
                 "params": {
                     "type": 0,
                     "pageNumber": 1,
-                    "limitNumber": 100,
+                    "limitNumber": 25,
                     "isEqualType": true
                 },
                 "recursions": 0,
@@ -76,10 +76,6 @@ let APP = function() {
 
                         let message = "Requested explorer API data (Page " + response.currentPageNumber + ' of ' + response.totalPageNumber + ")";
 
-                        if(req.getResponseHeader("Content-Length")) {
-                            message += ' (' + (parseInt(req.getResponseHeader("Content-Length")) / 1048576.0) + 'MB)';
-                        }
-
                         APP.message(message);
 
                     }
@@ -88,7 +84,7 @@ let APP = function() {
 
                         transaction.data.outputs.forEach(function(output, output_index) {
 
-                            if(output.address == APP.config.address) {
+                            if(output.address.toLowerCase() == APP.config.address.toLowerCase()) {
 
                                 let timestamp_utc = new Date(0);
                                     timestamp_utc.setUTCSeconds(parseInt(transaction.timestamp));
@@ -131,6 +127,12 @@ let APP = function() {
                             APP.fail("There are no stake rewards found for this address!");
                             return;
                         }
+
+                        recursive_data.rewards.sort(function(a, b) {
+
+                            return parseInt(b.timestamp) > parseInt(a.timestamp);
+
+                        });
 
                         // These are intentionally reversed.
                         // We need them backwards for the call to the price API
@@ -226,7 +228,7 @@ let APP = function() {
                 "api": "explorer",
                 "method": "stake",
                 "transform_url": function(url, api) {
-                    return url + '/' + APP.config.address + '?types[]=vcp&types[]=gcp&types[]=eenp';
+                    return url + '/' + APP.config.address.toLowerCase() + '?types[]=vcp&types[]=gcp&types[]=eenp';
                 },
                 "params": {},
                 "response": function(response, req, api, type, callbacks = {}, params = {}, recursive_data = {}) {
@@ -334,6 +336,9 @@ let APP = function() {
         });
         APP.config.nodes.sections.intro.style.display = 'block';
 
+        APP.config.nodes.inputs.address.disabled = false;
+        APP.config.nodes.buttons.start.disabled = false;
+
     }
 
     /** -------------------------------------------------------------- //
@@ -352,9 +357,13 @@ let APP = function() {
 
             APP.config.nodes.messages.running.innerHTML = APP.config.nodes.messages.running.innerHTML + message;
 
+            APP.config.nodes.messages.running.scrollTo(0, APP.config.nodes.messages.running.scrollHeight);
+
         } else {
 
             APP.config.nodes.messages.running.innerHTML = message;
+
+            APP.config.nodes.messages.running.scrollTo(0, 0);
 
         }
 
@@ -514,9 +523,9 @@ let APP = function() {
 
             let searchParams = new URLSearchParams(window.location.search);
 
-            if(!searchParams.get("address") || searchParams.get("address") != APP.config.address) {
+            if(!searchParams.get("address") || searchParams.get("address").toLowerCase() != APP.config.address.toLowerCase()) {
 
-                searchParams.set("address", APP.config.address);
+                searchParams.set("address", APP.config.address.toLowerCase());
                 history.pushState(null, '', window.location.pathname + '?' + searchParams.toString());
 
             }
@@ -710,6 +719,26 @@ let APP = function() {
 
     /** -------------------------------------------------------------- //
     
+    Set Address From URL
+    
+    */
+
+    APP.set_address_from_url = function() {
+
+        let urlParams = new URLSearchParams(window.location.search);
+        let address = urlParams.get('address');
+
+        if(address) {
+
+            APP.config.nodes.inputs.address.value = address.toLowerCase();
+            APP.events.address_change();
+
+        }
+
+    };
+
+    /** -------------------------------------------------------------- //
+    
     Init
     
     */
@@ -720,15 +749,7 @@ let APP = function() {
             if(!window[feature]) { APP.fail("Missing: ", feature); return false; }
         });
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const address = urlParams.get('address');
-
-        if(address) {
-
-            APP.config.nodes.inputs.address.value = address;
-            APP.events.address_change();
-
-        }
+        APP.set_address_from_url();
 
         APP.config.modals.errors = new bootstrap.Modal(document.getElementById('errors'), {
             keyboard: false
@@ -738,6 +759,10 @@ let APP = function() {
         APP.config.nodes.inputs.address.addEventListener('keyup', APP.events.address_change);
         APP.config.nodes.buttons.start.addEventListener('click', APP.events.start);
         APP.config.nodes.buttons.csv.addEventListener('click', APP.events.csv);
+
+        window.onpopstate = function() {
+            APP.set_address_from_url();
+        }
 
     };
 
@@ -749,6 +774,6 @@ let APP = function() {
 
 window.onload = function() {
 
-    window.APP = new APP();
+    window.APP = new APP_FUNCTION();
 
 };
