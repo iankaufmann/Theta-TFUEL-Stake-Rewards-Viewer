@@ -610,7 +610,7 @@ let APP_FUNCTION = function() {
 
                         csv_timestamp = csv_timestamp + ' ' + csv_timestamp_time_split[0];
 
-                        APP.config.csv.data.push([csv_timestamp, "income", "USD", "0", "TFUEL", reward["tfuel"], "", ""]);
+                        APP.config.csv.data.push([csv_timestamp, "staking", "TFUEL", reward["tfuel"], "USD", "0", "", ""]);
 
                     });
 
