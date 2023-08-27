@@ -6,3 +6,5 @@ Historical price data is pulled from the thetascan.io API, however the wallet ad
 Note: Depending on the number of individual rewards you have recieved, this process may take quite a long time. It will also use a lot of bandwidth, as each response from the Theta Explorer API can be around 25mb of JSON, of which there could be hundreds of responses.
 
 This is due to the extremely inefficient way that the API groups outputs on transactions. Each stake reward payout is batched with hundreds of addresses besides yours, and they are all included in the API response.
+
+https://iankaufmann.github.io/Theta-TFUEL-Stake-Rewards-Viewer/
